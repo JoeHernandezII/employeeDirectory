@@ -9,14 +9,14 @@ class Header extends Component {
         let value = event.target.value;
         const name = event.target.name;
 
-        //updating the input's state
+        
         this.setState({
             [name]: value
         });
     };
 
     handleFormSubmit = event => {
-        // Preventing the default behavior of the form submit (which is to refresh the page)
+        
         event.preventDefault();
         if (!this.state.userInput) {
             alert("Enter a search term before submitting.");

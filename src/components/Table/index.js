@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { TableContainer, Paper, Table, TableHead, TableCell, TableBody, TableRow, Avatar, TableSortLabel } from '@material-ui/core';
 import API from '../../utils/API'
 
-//used class to store state
+
 class EmployeeTable extends Component {
     state = {
         results: [],
         userInput: ""
     };
-    // when table component mounts get employees from API and assign to results state
+    
     componentDidMount() {
         this.getEmployees();
     };
