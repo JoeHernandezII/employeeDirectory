@@ -6,7 +6,6 @@ class Header extends Component {
     };
 
     handleInputChange = event => {
-        // Getting the value and name of the input which triggered the change
         let value = event.target.value;
         const name = event.target.name;
 
