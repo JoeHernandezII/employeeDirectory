@@ -13,7 +13,7 @@ class EmployeeTable extends Component {
         this.getEmployees();
     };
 
-    // function to make api call
+    
     getEmployees() {
         API.getUsers()
             .then(res => this.setState({ results: res.data.results }))
