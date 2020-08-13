@@ -27,7 +27,7 @@ class EmployeeTable extends Component {
         let value = event.target.value;
         const name = event.target.name;
 
-        //updating the input's state
+        
         this.setState({
             [name]: value
         });

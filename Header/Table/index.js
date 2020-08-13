@@ -8,34 +8,33 @@ class EmployeeTable extends Component {
         results: [],
         userInput: ""
     };
-    // when table component mounts get employees from API and assign to results state
+    
     componentDidMount() {
         this.getEmployees();
     };
 
-    // function to make api call
+   
     getEmployees() {
         API.getUsers()
             .then(res => this.setState({ results: res.data.results }))
             .catch(err => console.log(err));
     }
 
-    //update state with user input as it changes. must do so that userInput state is set before handleFormSubmit fires or the search wont be complete
+    
     handleInputChange = event => {
-        // Getting the value and name of the input which triggered the change
         event.preventDefault();
         let value = event.target.value;
         const name = event.target.name;
 
-        //updating the input's state
+        
         this.setState({
             [name]: value
         });
     };
 
-    //search employees. regexp allows search for exact and partial matches without the need to convert all to upper or lower etc. 
+    
     handleFormSubmit = event => {
-        // Preventing the default behavior of the form submit (which is to refresh the page)
+        
         event.preventDefault();
         if (!this.state.userInput) {
             alert("Enter a search term before submitting.");
@@ -54,15 +53,10 @@ class EmployeeTable extends Component {
                 || regexp.test(el.location.city)
                 || regexp.test(el.location.state)
             );
-            // const filteredResults = toFilter.filter(function (el) {
-            //     return el.name.first === searchTerm
-            //         || el.name.last === searchTerm
-            //         || el.email === searchTerm
-            //         || el.phone === searchTerm
-            // });
+           
             this.setState({ results: filteredResults })
         }
-        //empty the search field after search complete
+        
         this.setState({
             userInput: ""
         });
