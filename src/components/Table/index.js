@@ -1,148 +1,107 @@
-import React, { Component } from 'react';
-import { TableContainer, Paper, Table, TableHead, TableCell, TableBody, TableRow, Avatar, TableSortLabel } from '@material-ui/core';
-import API from '../../utils/API'
+import React from "react";
 
-
-class EmployeeTable extends Component {
-    state = {
-        results: [],
-        userInput: ""
-    };
-    
-    componentDidMount() {
-        this.getEmployees();
-    };
-
-
-    getEmployees() {
-        API.getUsers()
-            .then(res => this.setState({ results: res.data.results }))
-            .catch(err => console.log(err));
-    }
-
-    
-    handleInputChange = event => {
-       
-        event.preventDefault();
-        let value = event.target.value;
-        const name = event.target.name;
-
-        
-        this.setState({
-            [name]: value
-        });
-    };
-
-     
-    handleFormSubmit = event => {
-        
-        event.preventDefault();
-        if (!this.state.userInput) {
-            alert("Enter a search term before submitting.");
-        } else {
-            console.log(this.state.userInput);
-            const searchTerm = this.state.userInput;
-            const toFilter = this.state.results;
-            const regexp = new RegExp(searchTerm, 'i');
-            console.log(toFilter)
-            const filteredResults = toFilter.filter(el =>
-                regexp.test(el.name.first)
-                || regexp.test(el.name.last)
-                || regexp.test(el.name.last)
-                || regexp.test(el.phone)
-                || regexp.test(el.email)
-                || regexp.test(el.location.city)
-                || regexp.test(el.location.state)
-            );
-           
-            this.setState({ results: filteredResults })
-        }
-        
-        this.setState({
-            userInput: ""
-        });
-    };
-
-    sortByFirstName = () => {
-        let firstNameSort = this.state.results.sort(compare)
-        function compare(a, b) {
-            const nameA = a.name.first;
-            const nameB = b.name.first;
-            if (nameA > nameB) {
-                return 1;
-            } else if (nameA < nameB) {
-                return -1
-            } else if (nameA === nameB) {
-                return 0;
-            }
-        }
-        this.setState({ result: firstNameSort })
-    }
-
-    render() {
-        const rows = this.state.results;
+function Table(props) {
+    if (props.currentPage === "") {
         return (
-
-
-
-            <TableContainer component={Paper} >
-                <form className="form-inline" style={{ marginTop: "5px", marginLeft: "5px" }} >
-                    <input
-                        className="form-control mr-sm-2 m1"
-                        type="search"
-                        placeholder="Search"
-                        aria-label="Search"
-                        value={this.state.value}
-                        onChange={this.handleInputChange}
-                        name="userInput" />
-                    <button
-                        className="btn btn-outline-primary my-2 my-sm-0"
-                        type="submit"
-                        onClick={this.handleFormSubmit}
-                    >Search</button>
-                    <button
-                        className="btn btn-outline-primary my-2 my-sm-0"
-                        type="submit"
-                        onClick={this.getEmployees}
-                        style={{ marginLeft: "8px" }}
-                    >Show All Employees</button>
-                </form>
-
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell align="left"><TableSortLabel onClick={this.sortByFirstName}>Name</TableSortLabel></TableCell>
-                            <TableCell align="left">Phone Number</TableCell>
-                            <TableCell align="left">Email</TableCell>
-                            <TableCell align="left">Location</TableCell>
-                        </TableRow>
-                    </TableHead >
-                    <TableBody>
-                        {rows.length ?
-
-                            rows.map((res) => (
-                                <TableRow key={res.id.value}>
-                                    <TableCell component="th" scope="rows">
-                                        <Avatar alt={res.name.first} src={res.picture.thumbnail} />
-                                    </TableCell>
-                                    <TableCell align="left">{res.name.first} {res.name.last}</TableCell>
-                                    <TableCell align="left">{res.phone}</TableCell>
-                                    <TableCell align="left">{res.email}</TableCell>
-                                    <TableCell align="left">{res.location.city},    {res.location.state}</TableCell>
-                                </TableRow>
-                            ))
-                            :
-                            <TableRow>
-                                <TableCell align="center" colSpan={5}>No results found</TableCell>
-                            </TableRow>
-                        }
-                    </TableBody>
-                </Table >
-            </TableContainer >
-
+            <table className="header table table-white">
+                <thead className="thead-white">
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByFirst()}>First Name</a></th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByLast()}>Last Name</a></th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByCity()}>City</a></th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByCountry()}>Country</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        props.results.map(result => (
+                            <tr key={result.cell}>
+                                <th scope="row">
+                                    <a href="#singlePage" onClick={() => props.handlePageChange({ result })}>
+                                        <img src={result.picture.thumbnail} className="picture" alt="http://placekitten.com/200/300"></img>
+                                    </a>
+                                </th>
+                                <td>{result.name.first}</td>
+                                <td>{result.name.last}</td>
+                                <td>{result.cell}</td>
+                                <td>{result.email}</td>
+                                <td>{result.location.street.number} {result.location.street.name}</td>
+                                <td>{result.location.city}</td>
+                                <td>{result.location.country}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        )
+    } else if (typeof props.currentPage === "string") {
+        let matches = props.results.filter(result => {
+            return (result.name.first + " " + result.name.last).substring(0, props.currentPage.length).toLowerCase() === props.currentPage.toLowerCase();
+        })
+        return (
+            <table className="header table table-white">
+                <thead className="thead-white">
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByFirst()}>First Name</a></th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByLast()}>Last Name</a></th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByCity()}>City</a></th>
+                        <th scope="col"><a href="#name" className="alert alert-white" onClick={() => props.sortByCountry()}>Country</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        matches.map(result => (
+                            <tr key={result.cell}>
+                                <th scope="row">
+                                    <a href="#singlePage" className="" onClick={() => props.handlePageChange({ result })}>
+                                        <img src={result.picture.thumbnail} className="picture" alt="http://placekitten.com/200/300"></img>
+                                    </a>
+                                </th>
+                                <td>{result.name.first}</td>
+                                <td>{result.name.last}</td>
+                                <td>{result.cell}</td>
+                                <td>{result.email}</td>
+                                <td>{result.location.street.number} {result.location.street.name}</td>
+                                <td>{result.location.city}</td>
+                                <td>{result.location.country}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        )
+    } else {
+        return (
+            <div>
+                <div className="card mb-3 bg-light">
+                    <div className="row no-gutters">
+                        <div className="photo col-md-4">
+                            <img src={props.currentPage.result.picture.large} className="card-img border border-dark" alt="http://placekitten.com/200/300" />
+                        </div>
+                        <div className="col-md-8">
+                            <div className="card-body">
+                                <p className="card-text">Username: {props.currentPage.result.login.username}</p>
+                                <p className="card-text">Name: {props.currentPage.result.name.first} {props.currentPage.result.name.last}</p>
+                                <p className="card-text">Phone Number: {props.currentPage.result.cell}</p>
+                                <p className="card-text">Email: {props.currentPage.result.email}</p>
+                                <p className="card-text">Address: {props.currentPage.result.location.street.number} {props.currentPage.result.location.street.name}</p>
+                                <p className="card-text">City: {props.currentPage.result.location.city}</p>
+                                <p className="card-text">Country: {props.currentPage.result.location.country}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         )
     }
-};
+}
 
-export default EmployeeTable;
+export default Table;
