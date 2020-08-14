@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import SearchAppBar from './components/testHeader';
+import SearchAppBar from './components/Header';
 import EmployeeTable from './components/Table';
 
 
