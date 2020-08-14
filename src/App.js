@@ -1,18 +1,15 @@
-import React from 'react';
-import './App.css';
-import SearchAppBar from './components/Header';
-import EmployeeTable from './components/Table';
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Container from "./components/Container";
 
-
-//class component to access input 
 function App() {
   return (
-    <div>
-      <SearchAppBar />
-      <EmployeeTable />
-    </div >
-  );
+    <Router>
+      <div>
+        <Route exact path="/" component={Container} />
+      </div>
+    </Router>
+  )
 }
-
 
 export default App;

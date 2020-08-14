@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Api from "../utils/Api";
 import Table from "./Table";
-import Header from "./Header";
+import Navbar from "./Header";
 
 class Container extends Component {
     state = {
