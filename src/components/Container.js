@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Api from "../utils/Api";
+import Api from "../utils/API";
 import Table from "./Table";
 import Header from "./Header";
 
